@@ -146,6 +146,11 @@ NSTimer *timer;
      selector:@selector(keyboardWillHide)
      name:UIKeyboardWillHideNotification object:nil];
 
+    [[NSNotificationCenter defaultCenter]
+        addObserver:self
+        selector:@selector(onOrientationChange)
+        name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
+
     NSLog(@"Using WKWebView");
 
     [self addURLObserver];
@@ -179,6 +184,15 @@ static void * KVOContext = &KVOContext;
     if ([self shouldReloadWebView]) {
         NSLog(@"%@", @"CDVWKWebViewEngine reloading!");
         [(WKWebView*)_engineWebView reload];
+    }
+}
+
+- (void)onOrientationChange {
+    WKWebView* wkWebView = (WKWebView*)_engineWebView;
+    if (wkWebView) {
+        CGRect bounds = [[UIScreen mainScreen] bounds];
+        NSLog(@"Fixing WKWebView frame bounds from %@ to %@", NSStringFromCGRect(wkWebView.frame), NSStringFromCGRect(bounds));
+        wkWebView.frame = bounds;
     }
 }
 
