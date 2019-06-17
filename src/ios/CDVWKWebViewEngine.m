@@ -190,9 +190,15 @@ static void * KVOContext = &KVOContext;
 - (void)onOrientationChange {
     WKWebView* wkWebView = (WKWebView*)_engineWebView;
     if (wkWebView) {
+        // Fix the app's webView to the correct dimensions
         CGRect bounds = [[UIScreen mainScreen] bounds];
         NSLog(@"Fixing WKWebView frame bounds from %@ to %@", NSStringFromCGRect(wkWebView.frame), NSStringFromCGRect(bounds));
         wkWebView.frame = bounds;
+
+        // Also fix the rootController's webView frame to the correct dimensions
+        UIViewController* rootController = [UIApplication sharedApplication].delegate.window.rootViewController;
+        NSLog(@"Fixing rootController.view.frame %@ to bounds %@", NSStringFromCGRect(rootController.view.frame), NSStringFromCGRect(bounds));
+        rootController.view.frame = bounds;
     }
 }
 
